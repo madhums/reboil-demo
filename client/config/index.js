@@ -1,5 +1,7 @@
 
-export const appName = 'ReBoil'
+import pkg from '../../package.json'
+
+export const appName = pkg.name
 export const isProduction = process.env.NODE_ENV === 'production'
 const config = {
   appName,

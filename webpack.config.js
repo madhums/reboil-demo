@@ -99,6 +99,11 @@ module.exports = {
         loader: 'style!css'
       },
       {
+        test: /\.json$/,
+        exclude: /node_modules/,
+        loader: 'json'
+      },
+      {
         test: /\.(scss|sass)$/,
         loader: ExtractTextPlugin.extract('style-loader', [
           'css-loader',
