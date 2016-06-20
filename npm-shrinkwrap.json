@@ -1440,6 +1440,11 @@
       "from": "express@>=4.14.0 <4.15.0",
       "resolved": "https://registry.npmjs.org/express/-/express-4.14.0.tgz"
     },
+    "express-history-api-fallback": {
+      "version": "2.0.0",
+      "from": "express-history-api-fallback@latest",
+      "resolved": "https://registry.npmjs.org/express-history-api-fallback/-/express-history-api-fallback-2.0.0.tgz"
+    },
     "extend": {
       "version": "3.0.0",
       "from": "extend@>=3.0.0 <3.1.0",
