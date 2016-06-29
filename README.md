@@ -22,12 +22,12 @@ Visit http://localhost:3000
 
 For creating build
 
-```
-npm run build
+```sh
+$ npm run build
 ```
 
 For running on production
 
-```
-npm start
+```sh
+$ npm start
 ```
