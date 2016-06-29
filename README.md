@@ -3,6 +3,14 @@
 
 An attempt to implement [node-express-mongoose-demo](https://github.com/madhums/node-express-mongoose-demo/) in [React](http://reactjs.com) and [Redux](http://github.com/reactjs/redux)
 
+## Install
+
+Fork and clone the repo
+
+```sh
+$ npm install
+```
+
 ## Usage
 
 ```sh
