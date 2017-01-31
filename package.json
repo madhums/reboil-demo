@@ -60,7 +60,7 @@
     "style-loader": "~0.13.0",
     "url-loader": "~0.5.7",
     "webpack": "~1.13.1",
-    "webpack-dev-server": "~1.14.1",
+    "webpack-dev-server": "~2.2.1",
     "webpack-hot-middleware": "~2.12.2",
     "webpack-manifest-plugin": "~1.0.1",
     "webpack-md5-hash": "0.0.5"
