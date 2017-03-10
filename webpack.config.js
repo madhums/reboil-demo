@@ -7,7 +7,7 @@ const WebpackMd5Hash = require('webpack-md5-hash');
 const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
 const path = require('path');
-// require('babel-polyfill');
+require('babel-polyfill');
 
 const PORT = 3000;
 const minimize = process.argv.indexOf('--minimize') !== -1;
@@ -92,19 +92,20 @@ module.exports = {
   context: path.join(__dirname, './client'),
   entry: {
     main: [
-      // 'babel-polyfill',
+      'babel-polyfill',
 
-      'react-hot-loader/patch',
       // activate HMR for React
+      'react-hot-loader/patch',
 
-      `webpack-dev-server/client?http://localhost:${PORT}`,
       // bundle the client for webpack-dev-server
       // and connect to the provided endpoint
+      `webpack-dev-server/client?http://localhost:${PORT}`,
 
-      'webpack/hot/only-dev-server',
       // bundle the client for hot reloading
       // only- means to only hot reload for successful updates
+      'webpack/hot/only-dev-server',
 
+      './styles/index.scss',
       './index.js'
     ],
     vendor: [
@@ -141,23 +142,23 @@ module.exports = {
       {
         test: /\.css$/,
         include: /client/,
-        use: [
-          'style-loader',
-          'css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
-          'postcss-loader'
-        ]
+        loader: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            'style-loader',
+            'css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+            'postcss-loader'
+          ],
+          publicPath: path.join(__dirname, './build')
+        })
       },
       {
         test: /\.(scss|sass)$/,
-        include: [
-          path.join(__dirname, 'client/styles')
-        ],
+        include: /client/,
         loader: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
             'css-loader',
-            'postcss-loader',
-            'import-glob-loader',
             'sass-loader'
           ],
           publicPath: path.join(__dirname, './build')
@@ -176,15 +177,15 @@ module.exports = {
       },
       {
         test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        loader: ['url-loader?limit=10000&mimetype=application/font-woff']
+        use: ['url-loader?limit=10000&mimetype=application/font-woff']
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: ['url-loader?limit=10000&mimetype=application/octet-stream']
+        use: ['url-loader?limit=10000&mimetype=application/octet-stream']
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: ['file-loader']
+        use: ['file-loader']
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
@@ -195,13 +196,6 @@ module.exports = {
       }
     ]
   },
-  // resolve: {
-    // extensions: ['.js', '.jsx', '.json', '.css', '.scss'],
-    // modules: [
-    //   path.resolve(__dirname, 'node_modules'),
-    //   path.join(__dirname, './client')
-    // ]
-  // },
   plugins: plugins,
   devServer: {
     historyApiFallback: true,

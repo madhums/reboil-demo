@@ -6,7 +6,7 @@
 @import '~bootstrap-sass/assets/stylesheets/_bootstrap';
 
 // Components
-@import 'components';
+@import '../components/**/styles.scss';
 
 // App related
 @import 'styles';

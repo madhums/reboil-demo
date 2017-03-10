@@ -1,24 +1,24 @@
 
-import { Router, Route, browserHistory, IndexRoute } from 'react-router'
-import { Provider } from 'react-redux'
-import ReactDOM from 'react-dom'
-import React from 'react'
-import store from './store'
-import App from './containers/App'
-import NotFound from './containers/NotFound'
-import Home from './components/Home'
+import ReactDOM from 'react-dom';
+import React from 'react';
+import { AppContainer } from 'react-hot-loader';
+import Routes from './routes';
 
-import './styles/index.scss'
+function render (Component) {
+  ReactDOM.render(
+    <AppContainer>
+      <Component />
+    </AppContainer>
+    ,
+    document.getElementById('app')
+  )
+}
 
-ReactDOM.render(
-  <Provider store={store}>
-    <Router history={browserHistory}>
-      <Route path="/" component={App}>
-        <IndexRoute component={Home} />
-      </Route>
-      <Route path="*" component={NotFound} status={404} />
-    </Router>
-  </Provider>
-  ,
-  document.getElementById('app')
-)
+render(Routes);
+
+// Hot Module Replacement API
+if (module.hot) {
+  module.hot.accept('./routes', () => {
+    render(Routes);
+  });
+}
