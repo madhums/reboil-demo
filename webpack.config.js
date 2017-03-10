@@ -1,40 +1,63 @@
 
-const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const ManifestPlugin = require('webpack-manifest-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const { name: appName } = require('./package.json')
-const WebpackMd5Hash = require('webpack-md5-hash')
-const autoprefixer = require('autoprefixer')
-const webpack = require('webpack')
-const path = require('path')
+const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const WebpackMd5Hash = require('webpack-md5-hash');
+const autoprefixer = require('autoprefixer');
+const webpack = require('webpack');
+const path = require('path');
+// require('babel-polyfill');
 
-const minimize = process.argv.indexOf('--minimize') !== -1
-const isDev = process.env.NODE_ENV !== 'production'
-const main = isDev ? 'main.js' : '[name].[chunkhash].js'
-const vendor = isDev ? 'vendor.js' : '[name].[chunkhash].js'
-const styles = isDev ? 'styles.css' : 'styles.[chunkhash].css'
+const PORT = 3000;
+const minimize = process.argv.indexOf('--minimize') !== -1;
+const appEnv = process.env.APP_ENV;
+const isProduction = appEnv === 'production';
+const isDev = appEnv === 'development';
+const main = isDev ? 'main.js' : `[name].[chunkhash].${appEnv}.js`;
+const vendor = isDev ? 'vendor.js' : `[name].[chunkhash].${appEnv}.js`;
+const styles = isDev ? 'styles.css' : `styles.[chunkhash].${appEnv}.css`;
+const devtool = isDev
+    ? 'cheap-module-eval-source-map'
+    : 'source-map';
 
-if (isDev) require('dotenv').config()
+if (isDev) require('dotenv').config();
 
 // Optimize build process with the help of html-webpack-plugin
 // https://medium.com/@okonetchnikov/long-term-caching-of-static-assets-with-webpack-1ecb139adb95#.2boq97v33
 
 const plugins = [
-  new webpack.optimize.CommonsChunkPlugin('vendor', vendor),
+  new webpack.optimize.CommonsChunkPlugin({
+    name: 'vendor',
+    filename: vendor
+  }),
   new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'production'),
-      API_HOST: JSON.stringify(process.env.API_HOST || 'nodejs-express-demo.herokuapp.com')
+      APP_ENV: JSON.stringify(process.env.APP_ENV),
+      API_HOST: JSON.stringify(process.env.API_HOST)
     }
   }),
-  new ExtractTextPlugin(styles, { allChunks: true }),
+  new ExtractTextPlugin({
+    filename: styles,
+    allChunks: true
+  }),
+  new webpack.LoaderOptionsPlugin({
+    options: {
+      postcss: [
+        autoprefixer({
+          browsers: ['last 2 version']
+        })
+      ]
+    }
+  }),
   new HtmlWebpackPlugin({
-    title: appName,
+    title: 'Your app',
     template: 'index.html.ejs',
-    baseHref: '/'
+    favicon: path.join(__dirname, './client/assets/favicon.ico'),
+    trackingCode: isProduction && 'UA-33767964-12'
   })
-]
+];
 
 if (minimize) {
   plugins.push(...[
@@ -45,10 +68,19 @@ if (minimize) {
       manifestVariable: 'webpackManifest'
     }),
     new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true,
       compress: {
         warnings: false
       }
     })
+  ]);
+} else {
+  plugins.concat([
+    // enable HMR globally
+    new webpack.HotModuleReplacementPlugin(),
+
+    // prints more readable module names in the browser console on HMR updates
+    new webpack.NamedModulesPlugin()
   ])
 }
 
@@ -59,19 +91,36 @@ if (minimize) {
 module.exports = {
   context: path.join(__dirname, './client'),
   entry: {
-    main: './index.js',
+    main: [
+      // 'babel-polyfill',
+
+      'react-hot-loader/patch',
+      // activate HMR for React
+
+      `webpack-dev-server/client?http://localhost:${PORT}`,
+      // bundle the client for webpack-dev-server
+      // and connect to the provided endpoint
+
+      'webpack/hot/only-dev-server',
+      // bundle the client for hot reloading
+      // only- means to only hot reload for successful updates
+
+      './index.js'
+    ],
     vendor: [
       'react',
       'react-dom',
       'react-redux',
       'react-router',
-      'redux-thunk',
+      'redux-saga',
+      'react-bootstrap',
       'redux',
-      'moment',
       'isomorphic-fetch',
-      'classnames'
+      'classnames',
+      'i18n-js'
     ]
   },
+  devtool,
   output: {
     path: path.join(__dirname, './build'),
     filename: main,
@@ -79,78 +128,85 @@ module.exports = {
     publicPath: '/'
   },
   module: {
-    loaders: [
+    rules: [
+      {
+        test: /\.(scss|sass)$/,
+        enforce: 'pre',
+        use: ['import-glob-loader']
+      },
       {
         test: /\.html$/,
-        loader: 'file?name=[name].[ext]'
+        use: ['file-loader?name=[name].[ext]']
       },
       {
         test: /\.css$/,
         include: /client/,
-        loaders: [
+        use: [
           'style-loader',
           'css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
           'postcss-loader'
         ]
       },
       {
-        test: /\.css$/,
-        exclude: /client/,
-        loader: 'style!css'
-      },
-      {
-        test: /\.json$/,
-        exclude: /node_modules/,
-        loader: 'json'
-      },
-      {
         test: /\.(scss|sass)$/,
-        loader: ExtractTextPlugin.extract('style-loader', [
-          'css-loader',
-          'postcss-loader',
-          'sass-loader'
-        ])
+        include: [
+          path.join(__dirname, 'client/styles')
+        ],
+        loader: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            'css-loader',
+            'postcss-loader',
+            'import-glob-loader',
+            'sass-loader'
+          ],
+          publicPath: path.join(__dirname, './build')
+        })
       },
       {
-        test: /\.(js|jsx)$/,
+        test: /\.js$/,
         exclude: /node_modules/,
-        loaders: [
-          'react-hot',
+        use: [
           'babel-loader'
         ]
       },
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url?limit=10000&mimetype=application/font-woff'
+        use: ['url-loader?limit=10000&mimetype=application/font-woff']
       },
       {
         test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url?limit=10000&mimetype=application/font-woff'
+        loader: ['url-loader?limit=10000&mimetype=application/font-woff']
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url?limit=10000&mimetype=application/octet-stream'
+        loader: ['url-loader?limit=10000&mimetype=application/octet-stream']
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file'
+        loader: ['file-loader']
       },
       {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url?limit=10000&mimetype=image/svg+xml'
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [
+          'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
+          'image-webpack-loader?bypassOnDebug&optipng.optimizationLevel=7&gifsicle.interlaced=false'
+        ]
       }
     ]
   },
-  sassLoader: {
-    includePaths: [path.join(__dirname, 'client/styles')]
-  },
-  resolve: {
-    extensions: ['', '.js', '.jsx']
-  },
-  postcss: [autoprefixer],
+  // resolve: {
+    // extensions: ['.js', '.jsx', '.json', '.css', '.scss'],
+    // modules: [
+    //   path.resolve(__dirname, 'node_modules'),
+    //   path.join(__dirname, './client')
+    // ]
+  // },
   plugins: plugins,
   devServer: {
+    historyApiFallback: true,
     contentBase: './client',
+    port: PORT,
     hot: true
   }
-}
+};
