@@ -10,7 +10,7 @@ const path = require('path');
 require('babel-polyfill');
 
 const PORT = 3000;
-const minimize = process.argv.indexOf('--minimize') !== -1;
+const minimize = process.argv.indexOf('--optimize-minimize') !== -1;
 const appEnv = process.env.APP_ENV;
 const isProduction = appEnv === 'production';
 const isDev = appEnv === 'development';
@@ -59,6 +59,10 @@ const plugins = [
   })
 ];
 
+const source = [
+  'babel-polyfill'
+];
+
 if (minimize) {
   plugins.push(...[
     new WebpackMd5Hash(),
@@ -75,14 +79,31 @@ if (minimize) {
     })
   ]);
 } else {
-  plugins.concat([
+  plugins.push(...[
     // enable HMR globally
     new webpack.HotModuleReplacementPlugin(),
 
     // prints more readable module names in the browser console on HMR updates
     new webpack.NamedModulesPlugin()
-  ])
+  ]);
+  source.push(...[
+    // activate HMR for React
+    'react-hot-loader/patch',
+
+    // bundle the client for webpack-dev-server
+    // and connect to the provided endpoint
+    `webpack-dev-server/client?http://localhost:${PORT}`,
+
+    // bundle the client for hot reloading
+    // only- means to only hot reload for successful updates
+    'webpack/hot/only-dev-server'
+  ]);
 }
+
+source.push(...[
+  './styles/index.scss',
+  './index.js'
+]);
 
 /**
  * Config
@@ -91,23 +112,7 @@ if (minimize) {
 module.exports = {
   context: path.join(__dirname, './client'),
   entry: {
-    main: [
-      'babel-polyfill',
-
-      // activate HMR for React
-      'react-hot-loader/patch',
-
-      // bundle the client for webpack-dev-server
-      // and connect to the provided endpoint
-      `webpack-dev-server/client?http://localhost:${PORT}`,
-
-      // bundle the client for hot reloading
-      // only- means to only hot reload for successful updates
-      'webpack/hot/only-dev-server',
-
-      './styles/index.scss',
-      './index.js'
-    ],
+    main: source,
     vendor: [
       'react',
       'react-dom',
