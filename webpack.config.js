@@ -177,20 +177,8 @@ module.exports = {
         ]
       },
       {
-        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        use: ['url-loader?limit=10000&mimetype=application/font-woff']
-      },
-      {
-        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        use: ['url-loader?limit=10000&mimetype=application/font-woff']
-      },
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        use: ['url-loader?limit=10000&mimetype=application/octet-stream']
-      },
-      {
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        use: ['file-loader']
+        test: /\.(eot|ttf|woff|woff2)$/,
+        use: ['file-loader?publicPath=/']
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
