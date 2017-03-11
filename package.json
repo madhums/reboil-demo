@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "cleanup": "del 'build/*' '!build/manifest.json'",
-    "dev": "NODE_ENV=development APP_ENV=development webpack-dev-server -d --history-api-fallback --hot --progress --colors --port 3000",
+    "dev": "NODE_ENV=development APP_ENV=development webpack-dev-server -d --history-api-fallback --progress --colors --port 3000",
     "start": "NODE_ENV=production node server.js",
     "build": "npm run cleanup && webpack --progress --colors --optimize-minimize",
     "postinstall": "npm run build"
