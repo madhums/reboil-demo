@@ -55,7 +55,7 @@ const plugins = [
     title: 'Your app',
     template: 'index.html.ejs',
     favicon: path.join(__dirname, './client/assets/favicon.ico'),
-    trackingCode: isProduction && 'UA-33767964-12'
+    trackingCode: isProduction && process.env.GA_CODE
   })
 ];
 
@@ -194,6 +194,7 @@ module.exports = {
     historyApiFallback: true,
     contentBase: './client',
     port: PORT,
+    inline: true,
     hot: true
   }
 };
