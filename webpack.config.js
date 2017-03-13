@@ -26,6 +26,12 @@ if (isDev) require('dotenv').config();
 // Optimize build process with the help of html-webpack-plugin
 // https://medium.com/@okonetchnikov/long-term-caching-of-static-assets-with-webpack-1ecb139adb95#.2boq97v33
 
+const extractSass = new ExtractTextPlugin({
+  filename: styles,
+  allChunks: true,
+  disable: isDev
+});
+
 const plugins = [
   new webpack.optimize.CommonsChunkPlugin({
     name: 'vendor',
@@ -38,10 +44,7 @@ const plugins = [
       API_HOST: JSON.stringify(process.env.API_HOST)
     }
   }),
-  new ExtractTextPlugin({
-    filename: styles,
-    allChunks: true
-  }),
+  extractSass,
   new webpack.LoaderOptionsPlugin({
     options: {
       postcss: [
@@ -153,20 +156,18 @@ module.exports = {
             'style-loader',
             'css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
             'postcss-loader'
-          ],
-          publicPath: path.join(__dirname, './build')
+          ]
         })
       },
       {
         test: /\.(scss|sass)$/,
         include: /client/,
-        loader: ExtractTextPlugin.extract({
+        loader: extractSass.extract({
           fallback: 'style-loader',
           use: [
             'css-loader',
             'sass-loader'
-          ],
-          publicPath: path.join(__dirname, './build')
+          ]
         })
       },
       {
