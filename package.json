@@ -12,8 +12,9 @@
     "postinstall": "npm run build"
   },
   "engines": {
-    "node": ">=6.x",
-    "npm": ">=3.8.x"
+    "node": "6.10.0",
+    "npm": "3.10.10",
+    "yarn": "0.20.3"
   },
   "dependencies": {
     "bootstrap-sass": "~3.3.7",
