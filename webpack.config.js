@@ -117,16 +117,17 @@ module.exports = {
   entry: {
     main: source,
     vendor: [
+      'classnames',
+      'i18n-js',
+      'isomorphic-fetch',
+      'moment',
       'react',
+      'react-bootstrap',
       'react-dom',
       'react-redux',
       'react-router',
-      'redux-saga',
-      'react-bootstrap',
       'redux',
-      'isomorphic-fetch',
-      'classnames',
-      'i18n-js'
+      'redux-saga',
     ]
   },
   devtool,
