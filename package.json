@@ -55,7 +55,7 @@
     "css-loader": "~0.27.3",
     "del-cli": "~0.2.1",
     "dotenv": "~4.0.0",
-    "eslint": "~3.17.1",
+    "eslint": "~3.18.0",
     "eslint-plugin-babel": "~4.1.1",
     "eslint-plugin-react": "~6.10.0",
     "extract-text-webpack-plugin": "~2.1.0",
