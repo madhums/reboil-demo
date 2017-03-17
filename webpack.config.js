@@ -118,14 +118,17 @@ module.exports = {
     main: source,
     vendor: [
       'classnames',
+      'history',
       'i18n-js',
       'isomorphic-fetch',
       'moment',
+      'qs',
       'react',
       'react-bootstrap',
       'react-dom',
       'react-redux',
       'react-router',
+      'react-router-dom',
       'redux',
       'redux-saga',
     ]
