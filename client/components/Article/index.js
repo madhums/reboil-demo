@@ -1,6 +1,6 @@
 
 import React, { PropTypes, Component } from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class Article extends Component {
   render () {
