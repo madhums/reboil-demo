@@ -2,20 +2,17 @@
 import pkg from '../../package.json'
 
 export const appName = pkg.name
-export const isProduction = process.env.NODE_ENV === 'production'
+export const isDev = process.env.APP_ENV === 'development'
+export const isProduction = process.env.APP_ENV === 'production'
 const config = {
   appName,
   api: {
     PROTOCOL: isProduction ? 'https' : 'http',
     HOST: process.env.API_HOST
   },
-  ENV: process.env.NODE_ENV
+  ENV: process.env.APP_ENV
 }
 
 export const API = `${config.api.PROTOCOL}://${config.api.HOST}`
-export const apiHeaders = {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json'
-}
 
 export default config

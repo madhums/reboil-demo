@@ -7,8 +7,12 @@ import { Provider } from 'react-redux';
 
 import App from './containers/App';
 
-import store from './store';
 import history from './lib/history';
+
+import store from './store';
+import rootSaga from './sagas';
+
+store.runSaga(rootSaga);
 
 function render (Component) {
   ReactDOM.render(

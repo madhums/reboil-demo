@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import classNames from 'classnames'
 import Loader from '../Loader'
 import Article from '../Article'
-import { fetchArticles } from '../../actions'
+import { fetchArticles } from '../../actions/articles'
 
 class Articles extends Component {
   render () {
@@ -33,13 +33,13 @@ class Home extends Component {
   }
 
   render () {
-    const { isFetching, articles } = this.props
+    const { isFetching, items } = this.props
     const homeClass = classNames('home', { hidden: isFetching })
     return (
       <div>
         <Loader loading={isFetching} />
         <div className={homeClass}>
-          <Articles items={articles} />
+          <Articles items={items} />
         </div>
       </div>
     )
@@ -49,13 +49,13 @@ class Home extends Component {
 function mergeStateToProps (state) {
   const {
     isFetching,
-    articles,
+    items,
     pages,
     page
   } = state.articles
   return {
     isFetching,
-    articles,
+    items,
     pages,
     page
   }

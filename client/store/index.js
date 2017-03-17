@@ -1,20 +1,26 @@
 
-import { createStore, applyMiddleware } from 'redux'
-import rootReducer from '../reducers'
-import { isProduction } from '../config'
-import thunk from 'redux-thunk'
+import { createStore, applyMiddleware } from 'redux';
+import rootReducer from '../reducers';
+import { isDev } from '../config';
+import createSagaMiddleware, { END } from 'redux-saga';
 
-let middlewares = [thunk]
+const sagaMiddleware = createSagaMiddleware();
+const middlewares = [sagaMiddleware];
 
 // This will reduce the file size because we are conditionally including
 // https://github.com/reactjs/redux/issues/581#issuecomment-133187076
-if (!isProduction) {
-  const createLogger = require('redux-logger')
-  const logger = createLogger()
-  middlewares = [...middlewares, logger]
+if (isDev) {
+  const createLogger = require('redux-logger');
+  const logger = createLogger();
+  middlewares.push(logger);
 }
 
-export default createStore(
+const store = createStore(
   rootReducer,
   applyMiddleware(...middlewares)
-)
+);
+
+store.runSaga = sagaMiddleware.run;
+store.close = () => store.dispatch(END);
+
+export default store;
