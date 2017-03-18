@@ -33,8 +33,8 @@ class Home extends Component {
   }
 
   render () {
-    const { isFetching, items } = this.props
-    const homeClass = classNames('home', { hidden: isFetching })
+    const { loading, items } = this.props
+    const homeClass = classNames('home', { hidden: loading })
     return (
       <div>
         <Loader loading={isFetching} />
@@ -48,13 +48,13 @@ class Home extends Component {
 
 function mergeStateToProps (state) {
   const {
-    isFetching,
+    loading,
     items,
     pages,
     page
   } = state.articles
   return {
-    isFetching,
+    loading,
     items,
     pages,
     page
