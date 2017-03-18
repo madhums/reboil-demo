@@ -9,8 +9,6 @@ import * as api from '../lib/api';
 import { API_ERROR, DISMISS_ERRORS } from '../actions/ui';
 import { FETCH_ARTICLES } from '../actions/articles';
 
-export const perPage = 15;
-
 // Generic wrapper for all API calls
 function* entity (ACTION, apiFn, endpoint, payload) {
   try {
@@ -29,7 +27,7 @@ function* entity (ACTION, apiFn, endpoint, payload) {
 }
 
 function* fetchArticles ({ type, ...params }) {
-  const q = { per_page: perPage, ...params };
+  const q = { ...params };
   yield * entity(FETCH_ARTICLES, api.get, `/articles/?${qs.stringify(q)}`);
 }
 
