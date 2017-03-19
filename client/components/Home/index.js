@@ -37,7 +37,7 @@ class Home extends Component {
     const homeClass = classNames('home', { hidden: loading })
     return (
       <div>
-        <Loader loading={isFetching} />
+        <Loader loading={loading} />
         <div className={homeClass}>
           <Articles items={items} />
         </div>
@@ -47,17 +47,8 @@ class Home extends Component {
 }
 
 function mergeStateToProps (state) {
-  const {
-    loading,
-    items,
-    pages,
-    page
-  } = state.articles
   return {
-    loading,
-    items,
-    pages,
-    page
+    ...state.articles
   }
 }
 
