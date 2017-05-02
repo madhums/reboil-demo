@@ -51,7 +51,7 @@
     "babel-preset-stage-2": "~6.22.0",
     "babel-runtime": "~6.23.0",
     "chunk-manifest-webpack-plugin": "~1.0.0",
-    "css-loader": "~0.27.3",
+    "css-loader": "~0.28.1",
     "del-cli": "~0.2.1",
     "dotenv": "~4.0.0",
     "eslint": "~3.18.0",
