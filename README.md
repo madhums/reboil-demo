@@ -1,6 +1,8 @@
 
 ## ReBoil demo
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/madhums/reboil-demo.svg)](https://greenkeeper.io/)
+
 An attempt to implement [node-express-mongoose-demo](https://github.com/madhums/node-express-mongoose-demo/) in [React](http://reactjs.com) and [Redux](http://github.com/reactjs/redux)
 
 ## Usage
