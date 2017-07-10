@@ -1,14 +1,13 @@
-
 import React from 'react';
 import { Route, Switch } from 'react-router';
 
-// Containers
-import NotFound from './NotFound';
-
 // Components
-import Home from '../components/Home';
+import NotFound from 'components/NotFound';
 
-export default function Routes () {
+// Containers
+import Home from './Home';
+
+export default function Routes() {
   return (
     <Switch>
       <Route path="/" component={Home} exact />

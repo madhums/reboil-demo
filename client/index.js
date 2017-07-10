@@ -1,4 +1,3 @@
-
 import ReactDOM from 'react-dom';
 import React from 'react';
 import { AppContainer } from 'react-hot-loader';
@@ -14,7 +13,7 @@ import rootSaga from './sagas';
 
 store.runSaga(rootSaga);
 
-function render (Component) {
+function render(Component) {
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
@@ -22,10 +21,9 @@ function render (Component) {
           <Route component={Component} />
         </Router>
       </Provider>
-    </AppContainer>
-    ,
+    </AppContainer>,
     document.getElementById('app')
-  )
+  );
 }
 
 render(App);

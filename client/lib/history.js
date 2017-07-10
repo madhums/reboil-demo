@@ -1,6 +1,5 @@
-
 import createBrowserHistory from 'history/createBrowserHistory';
-import { getQuery } from './query-params';
+import qs from 'qs';
 
 const history = createBrowserHistory();
 export default history;
@@ -11,8 +10,10 @@ export default history;
 
 history.listen(addQueryObject);
 
-function addQueryObject () {
-  history.location = Object.assign(history.location, { query: getQuery(history.location) });
+function addQueryObject() {
+  history.location = Object.assign(history.location, {
+    query: qs.parse(window.location.search.slice(1))
+  });
 }
 
 addQueryObject();

@@ -1,24 +1,24 @@
-
-import React, { Component } from 'react'
-import { appName } from '../../config'
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { appName } from '../../config';
 
 class Header extends Component {
-  render () {
+  render() {
     return (
       <nav className="navbar navbar-inverse navbar-fixed-top">
         <div className="container">
           <div className="navbar-header">
-            <a className="navbar-brand" href="/">
+            <Link className="navbar-brand" to="/">
               {appName}
-            </a>
+            </Link>
           </div>
           <div className="navbar-collapse collapse">
-            <ul className="nav navbar-nav navbar-right"></ul>
+            <ul className="nav navbar-nav navbar-right" />
           </div>
         </div>
       </nav>
-    )
+    );
   }
 }
 
-export default Header
+export default Header;

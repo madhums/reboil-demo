@@ -1,4 +1,3 @@
-
 const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
@@ -17,9 +16,7 @@ const isDev = appEnv === 'development';
 const main = isDev ? 'main.js' : `[name].[chunkhash].${appEnv}.js`;
 const vendor = isDev ? 'vendor.js' : `[name].[chunkhash].${appEnv}.js`;
 const styles = isDev ? 'styles.css' : `styles.[chunkhash].${appEnv}.css`;
-const devtool = isDev
-    ? 'cheap-module-eval-source-map'
-    : 'source-map';
+const devtool = isDev ? 'cheap-module-eval-source-map' : 'source-map';
 
 if (isDev) require('dotenv').config();
 
@@ -62,51 +59,53 @@ const plugins = [
   })
 ];
 
-const source = [
-  'babel-polyfill'
-];
+const source = ['babel-polyfill'];
 
 if (minimize) {
-  plugins.push(...[
-    new WebpackMd5Hash(),
-    new ManifestPlugin(),
-    new ChunkManifestPlugin({
-      filename: 'chunk-manifest.json',
-      manifestVariable: 'webpackManifest'
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false
-      }
-    })
-  ]);
+  plugins.push(
+    ...[
+      new WebpackMd5Hash(),
+      new ManifestPlugin(),
+      new ChunkManifestPlugin({
+        filename: 'chunk-manifest.json',
+        manifestVariable: 'webpackManifest'
+      }),
+      new webpack.optimize.UglifyJsPlugin({
+        sourceMap: true,
+        compress: {
+          warnings: false
+        }
+      }),
+      new webpack.optimize.ModuleConcatenationPlugin()
+    ]
+  );
 } else {
-  plugins.push(...[
-    // enable HMR globally
-    new webpack.HotModuleReplacementPlugin(),
+  plugins.push(
+    ...[
+      // enable HMR globally
+      new webpack.HotModuleReplacementPlugin(),
 
-    // prints more readable module names in the browser console on HMR updates
-    new webpack.NamedModulesPlugin()
-  ]);
-  source.push(...[
-    // activate HMR for React
-    'react-hot-loader/patch',
+      // prints more readable module names in the browser console on HMR updates
+      new webpack.NamedModulesPlugin()
+    ]
+  );
+  source.push(
+    ...[
+      // activate HMR for React
+      'react-hot-loader/patch',
 
-    // bundle the client for webpack-dev-server
-    // and connect to the provided endpoint
-    `webpack-dev-server/client?http://localhost:${PORT}`,
+      // bundle the client for webpack-dev-server
+      // and connect to the provided endpoint
+      `webpack-dev-server/client?http://localhost:${PORT}`,
 
-    // bundle the client for hot reloading
-    // only- means to only hot reload for successful updates
-    'webpack/hot/only-dev-server'
-  ]);
+      // bundle the client for hot reloading
+      // only- means to only hot reload for successful updates
+      'webpack/hot/only-dev-server'
+    ]
+  );
 }
 
-source.push(...[
-  './styles/index.scss',
-  './index.js'
-]);
+source.push(...['./styles/index.scss', './index.js']);
 
 /**
  * Config
@@ -130,7 +129,7 @@ module.exports = {
       'react-router',
       'react-router-dom',
       'redux',
-      'redux-saga',
+      'redux-saga'
     ]
   },
   devtool,
@@ -168,18 +167,13 @@ module.exports = {
         include: /client/,
         loader: extractSass.extract({
           fallback: 'style-loader',
-          use: [
-            'css-loader',
-            'sass-loader'
-          ]
+          use: ['css-loader', 'sass-loader']
         })
       },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: [
-          'babel-loader'
-        ]
+        use: ['babel-loader']
       },
       {
         test: /\.(eot|ttf|woff|woff2)$/,
@@ -193,6 +187,12 @@ module.exports = {
         ]
       }
     ]
+  },
+  resolve: {
+    alias: {
+      components: path.resolve(__dirname, 'client/components/'),
+      actions: path.resolve(__dirname, 'client/actions/')
+    }
   },
   plugins: plugins,
   devServer: {

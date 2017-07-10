@@ -1,4 +1,3 @@
-
 import {
   FETCH_ARTICLES_REQUEST,
   FETCH_ARTICLES_SUCCESS,
@@ -12,7 +11,7 @@ const initialState = {
   pages: 1
 };
 
-export default function articles (state = initialState, action) {
+export default function articles(state = initialState, action) {
   switch (action.type) {
     case FETCH_ARTICLES_REQUEST:
       return {

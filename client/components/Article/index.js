@@ -1,29 +1,28 @@
+import React, { PropTypes } from 'react';
+import { Link } from 'react-router-dom';
 
-import React, { PropTypes, Component } from 'react'
-import { Link } from 'react-router-dom'
-
-class Article extends Component {
-  render () {
-    const article = this.props.item
-    return (
-      <div className="article">
-        <Link to={`/articles/${article._id}`}>{article.title}</Link>
-        <div className="body">{article.body}</div>
+function Article(props) {
+  const { _id, title, body } = props;
+  return (
+    <div className="article">
+      <Link to={`/articles/${_id}`}>
+        {title}
+      </Link>
+      <div className="body">
+        {body}
       </div>
-    )
-  }
+    </div>
+  );
 }
 
 Article.propTypes = {
-  item: PropTypes.shape({
+  _id: PropTypes.string,
+  title: PropTypes.string,
+  body: PropTypes.string,
+  user: PropTypes.shape({
     _id: PropTypes.string,
-    title: PropTypes.string,
-    body: PropTypes.string,
-    user: PropTypes.shape({
-      _id: PropTypes.string,
-      name: PropTypes.string
-    })
+    name: PropTypes.string
   })
-}
+};
 
-export default Article
+export default Article;
